@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 
 from app import models, schemas
 from app.auth import create_access_token, hash_password, verify_password
@@ -26,18 +27,26 @@ def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
             detail="Username or email already exists",
         )
 
-    new_user = models.User(
-        username=user.username,
-        email=user.email,
-        hashed_password=hash_password(user.password),
-        role="learner",
-    )
+    try:
+        new_user = models.User(
+            username=user.username,
+            email=user.email,
+            hashed_password=hash_password(user.password),
+            role="learner",
+        )
 
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
 
-    return new_user
+        return new_user
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}",
+        )
 
 
 @router.post("/login", response_model=schemas.Token)
@@ -71,5 +80,7 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "message": "Login successful",
     }
+
+
+# "message": "Login successful",
