@@ -26,3 +26,24 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class DiscussionCreate(BaseModel):
+    title: str
+    content: str
+
+
+class DiscussionUpdate(BaseModel):
+    title: str
+    content: str
+
+
+class DiscussionResponse(BaseModel):
+    id: int
+    title: str
+    content: str
+    owner_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
