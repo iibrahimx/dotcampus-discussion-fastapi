@@ -148,4 +148,4 @@ pytest --cov=app --cov-report=term-missing
 
 ## Deployment
 
-**Live API link:** Live API
+**Live API link:** [Live API](https://dotcampus-discussion-fastapi.onrender.com/)
