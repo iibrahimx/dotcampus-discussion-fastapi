@@ -61,3 +61,7 @@ class CommentResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class RoleUpdate(BaseModel):
+    role: str
