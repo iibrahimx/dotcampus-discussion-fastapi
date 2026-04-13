@@ -47,3 +47,17 @@ class DiscussionResponse(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class CommentCreate(BaseModel):
+    content: str
+
+
+class CommentResponse(BaseModel):
+    id: int
+    content: str
+    user_id: int
+    discussion_id: int
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
